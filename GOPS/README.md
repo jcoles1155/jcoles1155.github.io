@@ -1,27 +1,21 @@
-<!-- Set Up
-Before gameplay can begins, the deck must be separated into the four suits. Each player gets one suit of cards. One suit is discarded. The remaining suit is then shuffled and placed in the middle.
 
- 
+# Project Title
+
+GOPS, or Game of Pure Strategy, is a classic card game for two players and is played with a standard 52 playing card deck. In GOPS, Aces are low and Kings are high. The objective of GOPS is to win the most points
+
+## Getting Started
+
+Before gameplay can begins, the deck must be separated into the four suits. Each player gets one suit of cards. One suit is discarded. The remaining suit is then shuffled and placed in the middle.
 
 How to Play
 The top card from the middle deck is placed in-between the players. The players then select one of their cards to go into the middle, faced down. Players then reveal their card at the same time. The player with the higher ranking card wins the middle card.
 
 If there is a tie, the players' cards are discarded and another middle card is placed on top of the previous one. Players then aim to win both middle cards.
 
- 
-
 Scoring
 After the middle deck is exhausted, points are tallied.
 
-In GOPS, Aces are worth 1 point and, going incrementally, Kings are worth 13 points. Players then add up the point value of the cards they won. The player with the most points wins the game. -->
-
-# Project Title
-
-One Paragraph of project description goes here
-
-## Getting Started
-
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+In GOPS, Aces are worth 1 point and, going incrementally, Kings are worth 13 points. Players then add up the point value of the cards they won. The player with the most points wins the game.
 
 ### Prerequisites
 
