@@ -111,3 +111,27 @@ const SUIT = {
   };
 
   const RANKS = [RANK.ace, RANK.two, RANK.three, RANK.four, RANK.five, RANK.six, RANK.seven, RANK.eight, RANK.nine, RANK.ten, RANK.jack, RANK.queen, RANK.king];
+
+
+  function makeCard({ suit, rank, flipped }) {
+    if (flipped) {
+        const template = $("#card-back").html()
+        return $('<div class="card">').html(template)
+    } 
+
+    const template = $(`#card-${rank.name}`).html()
+        .replace(new RegExp('{suit.symbol}', 'g'), suit.symbol)
+        .replace(new RegExp('{suit.name}', 'g'), suit.name)
+    const card = $('<div class="card">').html(template)
+    card.find('div').addClass(suit.name)
+    
+    return card
+  }
+
+    let suit = SUIT.heart
+    RANKS.forEach((rank) => {
+        const card = $('<div class="col-1"></div>').append(makeCard({ suit, rank }))
+        $('#player-hand').append(card)
+    })
+    $('#player-hand').append(makeCard({ flipped: true }))
+

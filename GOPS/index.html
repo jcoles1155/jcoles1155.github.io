@@ -45,18 +45,89 @@
 </div>
 
 <div id="player-hand" class="row">
-    <div class="col"></div>
 </div> 
 
-<div class="card">
-    <div class="card-back"><span class="middle_center"><img src="img/back.png"/></span></div>
-</div>
 
-<div class="card">
-    <div class="card-two diamond">
-        <div class="corner top"><span class="number">2</span><span>&diams;</span></div><span class="suit top_center">&diams;</span><span class="suit bottom_center">&diams;</span>
-        <div class="corner bottom"><span class="number">2</span><span>&diams;</span></div>
+  <template id="card-back">
+    <div class="card-back"><span class="middle_center"><img src="img/back.png"/></span></div>
+  </template>
+  <template id="card-two">
+    <div class="card-two">
+      <div class="corner top"><span class="number">2</span><span>{suit.symbol}</span></div><span class="suit top_center">{suit.symbol}</span><span class="suit bottom_center">{suit.symbol}</span>
+      <div class="corner bottom"><span class="number">2</span><span>{suit.symbol}</span></div>
     </div>
-</div>
+  </template>
+  <template id="card-three">
+    <div class="card-three">
+      <div class="corner top"><span class="number">3</span><span>{suit.symbol}</span></div><span class="suit top_center">{suit.symbol}</span><span class="suit middle_center">{suit.symbol}</span><span class="suit bottom_center">{suit.symbol}</span>
+      <div class="corner bottom"><span class="number">3</span><span>{suit.symbol}</span></div>
+    </div>
+  </template>
+  <template id="card-four">
+    <div class="card-four">
+      <div class="corner top"><span class="number">4</span><span>{suit.symbol}</span></div><span class="suit top_left">{suit.symbol}</span><span class="suit top_right">{suit.symbol}</span><span class="suit bottom_left">{suit.symbol}</span><span class="suit bottom_right">{suit.symbol}</span>
+      <div class="corner bottom"><span class="number">4</span><span>{suit.symbol}</span></div>
+    </div>
+  </template>
+  <template id="card-five">
+    <div class="card-five">
+      <div class="corner top"><span class="number">5</span><span>{suit.symbol}</span></div><span class="suit top_left">{suit.symbol}</span><span class="suit top_right">{suit.symbol}</span><span class="suit middle_center">{suit.symbol}</span><span class="suit bottom_left">{suit.symbol}</span><span class="suit bottom_right">{suit.symbol}</span>
+      <div class="corner bottom"><span class="number">5</span><span>{suit.symbol}</span></div>
+    </div>
+  </template>
+  <template id="card-six">
+    <div class="card-six">
+      <div class="corner top"><span class="number">6</span><span>{suit.symbol}</span></div><span class="suit top_left">{suit.symbol}</span><span class="suit top_right">{suit.symbol}</span><span class="suit middle_left">{suit.symbol}</span><span class="suit middle_right">{suit.symbol}</span><span class="suit bottom_left">{suit.symbol}</span><span class="suit bottom_right">{suit.symbol}</span>
+      <div class="corner bottom"><span class="number">6</span><span>{suit.symbol}</span></div>
+    </div>
+  </template>
+  <template id="card-seven">
+    <div class="card-seven">
+      <div class="corner top"><span class="number">7</span><span>{suit.symbol}</span></div><span class="suit top_left">{suit.symbol}</span><span class="suit top_right">{suit.symbol}</span><span class="suit middle_left">{suit.symbol}</span><span class="suit middle_top">{suit.symbol}</span><span class="suit middle_right">{suit.symbol}</span><span class="suit bottom_left">{suit.symbol}</span><span class="suit bottom_right">{suit.symbol}</span>
+      <div class="corner bottom"><span class="number">7</span><span>{suit.symbol}</span></div>
+    </div>
+  </template>
+  <template id="card-eight">
+    <div class="card-eight">
+      <div class="corner top"><span class="number">8</span><span>{suit.symbol}</span></div><span class="suit top_left">{suit.symbol}</span><span class="suit top_right">{suit.symbol}</span><span class="suit middle_left">{suit.symbol}</span><span class="suit middle_top">{suit.symbol}</span><span class="suit middle_right">{suit.symbol}</span><span class="suit middle_bottom">{suit.symbol}</span><span class="suit bottom_left">{suit.symbol}</span><span class="suit bottom_right">{suit.symbol}</span>
+      <div class="corner bottom"><span class="number">8</span><span>{suit.symbol}</span></div>
+    </div>
+  </template>
+  <template id="card-nine">
+    <div class="card-nine">
+      <div class="corner top"><span class="number">9</span><span>{suit.symbol}</span></div><span class="suit top_left">{suit.symbol}</span><span class="suit top_right">{suit.symbol}</span><span class="suit middle_top_left">{suit.symbol}</span><span class="suit middle_center">{suit.symbol}</span><span class="suit middle_top_right">{suit.symbol}</span><span class="suit bottom_left">{suit.symbol}</span><span class="suit bottom_right">{suit.symbol}</span><span class="suit middle_bottom_left">{suit.symbol}</span><span class="suit middle_bottom_right">{suit.symbol}</span>
+      <div class="corner bottom"><span class="number">9</span><span>{suit.symbol}</span></div>
+    </div>
+  </template>
+  <template id="card-ten">
+    <div class="card-ten">
+      <div class="corner top"><span class="number">10</span><span>{suit.symbol}</span></div><span class="suit top_left">{suit.symbol}</span><span class="suit top_right">{suit.symbol}</span><span class="suit middle_top_left">{suit.symbol}</span><span class="suit middle_top_center">{suit.symbol}</span><span class="suit middle_top_right">{suit.symbol}</span><span class="suit bottom_left">{suit.symbol}</span><span class="suit bottom_right">{suit.symbol}</span><span class="suit middle_bottom_center">{suit.symbol}</span><span class="suit middle_bottom_left">{suit.symbol}</span><span class="suit middle_bottom_right">{suit.symbol}</span>
+      <div class="corner bottom"><span class="number">10</span><span>{suit.symbol}</span></div>
+    </div>
+  </template>
+  <template id="card-jack">
+    <div class="card-jack">
+      <div class="corner top"><span class="number">J</span><span>{suit.symbol}</span></div><span class="face middle_center"><img src="img/faces/face-jack-{suit.name}.png"/></span>
+      <div class="corner bottom"><span class="number">J</span><span>{suit.symbol}</span></div>
+    </div>
+  </template>
+  <template id="card-queen">
+    <div class="card-queen">
+      <div class="corner top"><span class="number">Q</span><span>{suit.symbol}</span></div><span class="face middle_center"><img src="img/faces/face-queen-{suit.name}.png"/></span>
+      <div class="corner bottom"><span class="number">Q</span><span>{suit.symbol}</span></div>
+    </div>
+  </template>
+  <template id="card-king">
+    <div class="card-king">
+      <div class="corner top"><span class="number">K</span><span>{suit.symbol}</span></div><span class="face middle_center"><img src="img/faces/face-king-{suit.name}.png"/></span>
+      <div class="corner bottom"><span class="number">K</span><span>{suit.symbol}</span></div>
+    </div>
+  </template>
+  <template id="card-ace">
+    <div class="card-ace">
+      <div class="corner top"><span class="number">A</span><span>{suit.symbol}</span></div><span class="suit middle_center">{suit.symbol}</span>
+      <div class="corner bottom"><span class="number">A</span><span>{suit.symbol}</span></div>
+    </div>
+  </template>
     
 </body>
