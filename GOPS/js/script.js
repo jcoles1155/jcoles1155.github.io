@@ -118,11 +118,15 @@ class Card {
         this.rank = rank
     }
     
-    render({ flipped = false } = {}) {
+    render({ flipped = false, empty = false } = {}) {
+        if (empty) {
+            return $('<div class="card empty">')
+        }
+
         if (flipped) {
             const template = $("#card-back").html()
             return $('<div class="card">').html(template)
-        } 
+        }
     
         const template = $(`#card-${this.rank.name}`).html()
             .replace(new RegExp('{suit.symbol}', 'g'), this.suit.symbol)
@@ -140,6 +144,13 @@ function makeHand(suit) {
         hand.push(new Card({ suit, rank }))
     })
     return hand
+}
+
+function renderHand(hand, target) {
+    $(target).empty()
+    hand.forEach((card) => {
+        $('<div class="col-card">').html(card.render()).appendTo(target)
+    })
 }
 
 // https://stackoverflow.com/a/2450976
@@ -164,12 +175,10 @@ function shuffle(array) {
 
 let playerHand = makeHand(SUIT.spade)
 let computerHand = makeHand(SUIT.heart)
-let deck = shuffle(makeHand(SUIT.spade))
+let deck = shuffle(makeHand(SUIT.club))
 let discard = makeHand(SUIT.diamond)
 
-playerHand.forEach((card) => {
-    $('<div class="col-card">').html(card.render()).appendTo("#player-hand")
-})
+renderHand(playerHand, '#player-hand')
 
 // deck.forEach((card) => {
 //     $("#deck").append(card.render({ flipped: true }))
@@ -178,7 +187,14 @@ $('#deck').html(deck[0].render({ flipped: true }))
 $('#discard').html(discard[0].render({ flipped: true }))
 $('#prize').html(deck[1].render())
 
-$('#computer-bid').html(computerHand[0].render())
-$('#player-bid').html(playerHand[1].render())
+$('#computer-bid').html(computerHand[0].render({ flipped: true }))
+$('#player-bid').html(new Card({}).render({ empty: true }))
 
-
+$('#player-hand').on('click', '.card', (e) => {
+    const $card = $(e.target).hasClass('card') ? $(e.target) : $(e.target).closest('.card')
+    const rank = $card.find('div')[0].classList[0].split('-')[1]
+    const cardIndex = playerHand.findIndex(card => card.rank.name === rank)
+    const [card] = playerHand.splice(cardIndex, 1)
+    renderHand(playerHand, '#player-hand')
+    $("#player-bid").html(card.render())
+})

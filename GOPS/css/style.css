@@ -54,9 +54,9 @@ main {
   }
 
   #player-hand {
-      width: 100%;
+      /* width: 100%; */
       border: 1px solid black;
-      padding: 5px;
+      /* padding: 5px; */
       /* margin: 40px auto; */
       font-size: 12px;
   }
@@ -70,4 +70,9 @@ main {
   .col-card {
     flex: 0 0 6.333333%;
     max-width: 6.333333%;
+  }
+
+  .card.empty {
+      background-color: #aaa;
+      box-shadow: 0 0 5px rgba(0,0,0,0.5) inset;
   }
