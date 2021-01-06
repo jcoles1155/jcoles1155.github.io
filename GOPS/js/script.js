@@ -32,106 +32,153 @@
 
 const SUIT = {
     club: {
-      name: 'club',
-      symbol: '♣',
-      color: 'black'
+        name: 'club',
+        symbol: '♣',
+        color: 'black'
     },
     diamond: {
-      name: 'diamond',
-      symbol: '&diams;',
-      color: 'red'
+        name: 'diamond',
+        symbol: '&diams;',
+        color: 'red'
     },
     spade: {
-      name: 'spade',
-      symbol: '&spades;',
-      color: 'black'
+        name: 'spade',
+        symbol: '&spades;',
+        color: 'black'
     },
     heart: {
-      name: 'heart',
-      symbol: '&hearts;',
-      color: 'red'
+        name: 'heart',
+        symbol: '&hearts;',
+        color: 'red'
     }
-  };
+};
 
-  const SUITS = [SUIT.club, SUIT.diamond, SUIT.spade, SUIT.heart];
+const SUITS = [SUIT.club, SUIT.diamond, SUIT.spade, SUIT.heart];
 
-  const RANK = {
+const RANK = {
     ace: {
-      name: 'ace',
-      symbol: 'A'
+        name: 'ace',
+        symbol: 'A'
     },
     two: {
-      name: 'two',
-      symbol: '2'
+        name: 'two',
+        symbol: '2'
     },
     three: {
-      name: 'three',
-      symbol: '3'
+        name: 'three',
+        symbol: '3'
     },
     four: {
-      name: 'four',
-      symbol: '4'
+        name: 'four',
+        symbol: '4'
     },
     five: {
-      name: 'five',
-      symbol: '5'
+        name: 'five',
+        symbol: '5'
     },
     six: {
-      name: 'six',
-      symbol: '6'
+        name: 'six',
+        symbol: '6'
     },
     seven: {
-      name: 'seven',
-      symbol: '7'
+        name: 'seven',
+        symbol: '7'
     },
     eight: {
-      name: 'eight',
-      symbol: '8'
+        name: 'eight',
+        symbol: '8'
     },
     nine: {
-      name: 'nine',
-      symbol: '9'
+        name: 'nine',
+        symbol: '9'
     },
     ten: {
-      name: 'ten',
-      symbol: '10'
+        name: 'ten',
+        symbol: '10'
     },
     jack: {
-      name: 'jack',
-      symbol: 'J'
+        name: 'jack',
+        symbol: 'J'
     },
     queen: {
-      name: 'queen',
-      symbol: 'Q'
+        name: 'queen',
+        symbol: 'Q'
     },
     king: {
-      name: 'king',
-      symbol: 'K'
+        name: 'king',
+        symbol: 'K'
     }
-  };
+};
 
-  const RANKS = [RANK.ace, RANK.two, RANK.three, RANK.four, RANK.five, RANK.six, RANK.seven, RANK.eight, RANK.nine, RANK.ten, RANK.jack, RANK.queen, RANK.king];
+const RANKS = [RANK.ace, RANK.two, RANK.three, RANK.four, RANK.five, RANK.six, RANK.seven, RANK.eight, RANK.nine, RANK.ten, RANK.jack, RANK.queen, RANK.king];
 
-
-  function makeCard({ suit, rank, flipped }) {
-    if (flipped) {
-        const template = $("#card-back").html()
-        return $('<div class="card">').html(template)
-    } 
-
-    const template = $(`#card-${rank.name}`).html()
-        .replace(new RegExp('{suit.symbol}', 'g'), suit.symbol)
-        .replace(new RegExp('{suit.name}', 'g'), suit.name)
-    const card = $('<div class="card">').html(template)
-    card.find('div').addClass(suit.name)
+class Card {
+    constructor({ suit, rank }) {
+        this.suit = suit
+        this.rank = rank
+    }
     
-    return card
-  }
-
-    let suit = SUIT.heart
+    render({ flipped = false } = {}) {
+        if (flipped) {
+            const template = $("#card-back").html()
+            return $('<div class="card">').html(template)
+        } 
+    
+        const template = $(`#card-${this.rank.name}`).html()
+            .replace(new RegExp('{suit.symbol}', 'g'), this.suit.symbol)
+            .replace(new RegExp('{suit.name}', 'g'), this.suit.name)
+        const card = $('<div class="card">').html(template)
+        card.find('div').addClass(this.suit.name)
+        
+        return card
+    }
+}
+  
+function makeHand(suit) {
+    let hand = []
     RANKS.forEach((rank) => {
-        const card = $('<div class="col-1"></div>').append(makeCard({ suit, rank }))
-        $('#player-hand').append(card)
+        hand.push(new Card({ suit, rank }))
     })
-    $('#player-hand').append(makeCard({ flipped: true }))
+    return hand
+}
+
+// https://stackoverflow.com/a/2450976
+function shuffle(array) {
+    var currentIndex = array.length, temporaryValue, randomIndex;
+
+    // While there remain elements to shuffle...
+    while (0 !== currentIndex) {
+
+        // Pick a remaining element...
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex -= 1;
+
+        // And swap it with the current element.
+        temporaryValue = array[currentIndex];
+        array[currentIndex] = array[randomIndex];
+        array[randomIndex] = temporaryValue;
+    }
+
+    return array;
+}
+
+let playerHand = makeHand(SUIT.spade)
+let computerHand = makeHand(SUIT.heart)
+let deck = shuffle(makeHand(SUIT.spade))
+let discard = makeHand(SUIT.diamond)
+
+playerHand.forEach((card) => {
+    $('<div class="col-card">').html(card.render()).appendTo("#player-hand")
+})
+
+// deck.forEach((card) => {
+//     $("#deck").append(card.render({ flipped: true }))
+// })
+$('#deck').html(deck[0].render({ flipped: true }))
+$('#discard').html(discard[0].render({ flipped: true }))
+$('#prize').html(deck[1].render())
+
+$('#computer-bid').html(computerHand[0].render())
+$('#player-bid').html(playerHand[1].render())
+
 

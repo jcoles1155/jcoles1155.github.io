@@ -31,21 +31,35 @@
     <title>Game Of Pure Strategy</title>
 </head>
 <body>
-<div id="title" class="row">
-    <div class="col">GAME OF PURE STRATEGY</div>
-</div>
-<div id="game-board-title" class="row">
-    <div class="col"></div>
-</div>
-<div class="mt-4">
-    <div id="main-div" class="row"> 
-        <div id="game-board" class="col-8 container-xl"></div>
-        <div id="scoreboard" class="col-4 container-sm"></div>
-    </div> 
-</div>
+    <div class="container-fluid">
+        <div id="main-div" class="row"> 
+            <div id="game-board" class="col-8">
+                <div class="row">
+                    <div id="computer-bid" class="col-4 offset-4"></div>
+                </div>
+                <div class="row">
+                    <div id="deck" class="col-4"></div>
+                    <div id="prize" class="col-4"></div>
+                    <div id="discard" class="col-4"></div>
+                </div>
+                <div class="row">
+                    <div id="player-bid" class="col-4 offset-4"></div>
+                </div>
+            </div>
+            <div id="scoreboard" class="col-4">
+                <div id="title" class="row">
+                    <div class="col">GAME OF PURE STRATEGY</div>
+                </div>
+                <div id="game-board-title" class="row">
+                    <div class="col"></div>
+                </div>
+            </div>
+        </div> 
+        
+        <div id="player-hand" class="row">
+        </div> 
+    </div>
 
-<div id="player-hand" class="row">
-</div> 
 
 
   <template id="card-back">
