@@ -12,6 +12,7 @@
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./css/playingcards.css">
 
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
@@ -36,11 +37,26 @@
 <div id="game-board-title" class="row">
     <div class="col"></div>
 </div>
-<div class="row">
-    <div id="game-board" class="col"></div>
-    <div id="scoreboard" class="col"></div>
+<div class="mt-4">
+    <div id="main-div" class="row"> 
+        <div id="game-board" class="col-8 container-xl"></div>
+        <div id="scoreboard" class="col-4 container-sm"></div>
+    </div> 
 </div>
+
 <div id="player-hand" class="row">
     <div class="col"></div>
+</div> 
+
+<div class="card">
+    <div class="card-back"><span class="middle_center"><img src="img/back.png"/></span></div>
 </div>
+
+<div class="card">
+    <div class="card-two diamond">
+        <div class="corner top"><span class="number">2</span><span>&diams;</span></div><span class="suit top_center">&diams;</span><span class="suit bottom_center">&diams;</span>
+        <div class="corner bottom"><span class="number">2</span><span>&diams;</span></div>
+    </div>
+</div>
+    
 </body>
