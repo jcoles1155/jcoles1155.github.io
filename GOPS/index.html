@@ -166,5 +166,37 @@
       <div class="corner bottom"><span class="number">A</span><span>{suit.symbol}</span></div>
     </div>
   </template>
+  
+  <div id="modal" class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+        </div>
+        <div class="modal-body">
+          ...
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Okay</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="chooseSuit" class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">Choose a suit</h5>
+        </div>
+        <div class="modal-body text-center">
+          <button class="btn btn-suit" id="club">♣</button>
+          <button class="btn btn-suit" id="diamond">♦</button>
+          <button class="btn btn-suit" id="spade">♠</button>
+          <button class="btn btn-suit" id="heart">♥</button>
+        </div>
+      </div>
+    </div>
+  </div>
     
 </body>

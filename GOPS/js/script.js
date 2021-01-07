@@ -179,24 +179,9 @@ class Hand {
         return this.cards.length
     }
 
-    // based on https://stackoverflow.com/a/2450976
     shuffle() {
-        var array = this.cards;
-        var currentIndex = array.length, temporaryValue, randomIndex;
-
-        // While there remain elements to shuffle...
-        while (0 !== currentIndex) {
-            // Pick a remaining element...
-            randomIndex = Math.floor(Math.random() * currentIndex);
-            currentIndex -= 1;
-
-            // And swap it with the current element.
-            temporaryValue = array[currentIndex];
-            array[currentIndex] = array[randomIndex];
-            array[randomIndex] = temporaryValue;
-        }
-
-        return this;
+        shuffle(this.cards)
+        return this
     }
 
     takeCard(rank) {
@@ -234,10 +219,78 @@ class Hand {
     }
 }
 
-let playerHand = new Hand('#player-hand', { suit: SUIT.spade })
-let computerHand = new Hand('#computer-hand', { suit: SUIT.heart }).shuffle()
-let deck = new Hand(null, { suit: SUIT.club }).shuffle()
-let discard = new Hand(null, { suit: SUIT.diamond })
+class Modal {
+    constructor({ title, body }) {
+        this.$el = $('#modal')
+        this.$el.find('.modal-title').html(title)
+        this.$el.find('.modal-body').html(body)
+    }
+
+    show() {
+        this.$el.find('button').on('click', () => this.hide())
+        this.modal = new bootstrap.Modal(this.$el[0], {
+            backdrop: 'static', keyboard: false
+        })
+        this.modal.show()
+    }
+
+    hide() {
+        this.modal.hide()
+        if (this.closeHandler) this.closeHandler()
+    }
+
+    onClose(callback) {
+        this.closeHandler = callback
+    }
+}
+
+class ChooseSuitModal {
+    constructor() {
+        this.$el = $('#chooseSuit')
+    }
+
+    show() {     
+        this.modal = new bootstrap.Modal(this.$el[0], {
+            backdrop: 'static', keyboard: false
+        })
+        this.$el.find('button').on('click', (e) => {
+            const suit = $(e.target).attr('id')
+            this.modal.hide()
+            if (this.closeHandler) this.closeHandler(suit)
+        })
+        this.modal.show()
+    }
+
+    hide() {
+        this.modal.hide()
+        if (this.closeHandler) this.closeHandler()
+    }
+
+    onClose(callback) {
+        this.closeHandler = callback
+    }
+}
+
+// based on https://stackoverflow.com/a/2450976
+function shuffle(array) {
+    var currentIndex = array.length, temporaryValue, randomIndex;
+
+    // While there remain elements to shuffle...
+    while (0 !== currentIndex) {
+        // Pick a remaining element...
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex -= 1;
+
+        // And swap it with the current element.
+        temporaryValue = array[currentIndex];
+        array[currentIndex] = array[randomIndex];
+        array[randomIndex] = temporaryValue;
+    }
+
+    return array;
+}
+
+let playerHand, computerHand, deck, discard
 let emptyCard = new Card(null, {})
 let playerScore = 0, computerScore = 0
 
@@ -291,39 +344,48 @@ function makeScoreHandler(prize, playerBid, computerBid) {
             emptyCard.render('#prize')
             emptyCard.render('#computer-bid')
             emptyCard.render('#player-bid')
-            setTimeout(showWinner, 100)
+            showWinner()
         }
     }
 }
 
 function showWinner() {
+    let modal
     if (computerScore > playerScore) {
-        alert("You lost")
+        modal = new Modal({ title: "Game over", body: "You lost" })
     } else if (playerScore > computerScore) {
-        alert("You won")
+        modal = new Modal({ title: "Congratulations!", body: "You won" })
     } else {
-        alert("It's a draw")
+        modal = new Modal({ title: "It's draw", body: "Play again?" })
     }
-    startGame()
+    modal.show()
 }
 
-function startGame() {
-    playerHand = new Hand('#player-hand', { suit: SUIT.spade })
-    computerHand = new Hand('#computer-hand', { suit: SUIT.heart }).shuffle()
-    deck = new Hand('#deck', { suit: SUIT.club, flipped: true }).shuffle()
-    discard = new Hand('#discard', { suit: SUIT.diamond, flipped: true })
-    playerScore = 0
-    computerScore = 0
+function chooseSuit() {
     // render bids
     emptyCard.render('#prize')
     emptyCard.render('#computer-bid')
     emptyCard.render('#player-bid')
 
-    renderScores()
-    // console.log(deck.cards)
-    makeComputerBid(deck.cards.pop())
+    let modal = new ChooseSuitModal()
+    modal.onClose((suit) => startGame(SUIT[suit]))
+    modal.show()
 }
 
-$('#start-game').on('click', () => startGame())
+function startGame(playerSuit) {
+    playerHand = new Hand('#player-hand', { suit: playerSuit })
+    let suits = shuffle(SUITS.filter(suit => suit != playerSuit))
+    computerHand = new Hand('#computer-hand', { suit: suits.pop() }).shuffle()
+    deck = new Hand('#deck', { suit: suits.pop(), flipped: true }).shuffle()
+    discard = new Hand('#discard', { suit: suits.pop(), flipped: true })
+    playerScore = 0
+    computerScore = 0
 
-startGame()
+    renderScores()
+    // console.log(deck.cards)
+    makeComputerBid(deck.takeCard())
+}
+
+$('#start-game').on('click', () => chooseSuit())
+
+chooseSuit()

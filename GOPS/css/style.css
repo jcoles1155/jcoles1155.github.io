@@ -80,3 +80,16 @@ main {
       background-color: #aaa;
       box-shadow: 0 0 5px rgba(0,0,0,0.5) inset;
   }
+
+  .btn-suit {
+    font-family: 'Suit-Regular', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 6em;
+  }
+
+  .btn-suit#club, .btn-suit#spade {
+    color: black;
+  }
+
+  .btn-suit#heart, .btn-suit#diamond {
+    color: red;
+  }
