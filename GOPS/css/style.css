@@ -53,7 +53,11 @@ main {
       /* margin: 100px auto; */
   }
 
-  #player-hand {
+  #score-container {
+      margin: 100px auto;
+  }
+
+  #player-hand, #computer-hand {
       /* width: 100%; */
       border: 1px solid black;
       /* padding: 5px; */

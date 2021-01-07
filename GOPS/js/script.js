@@ -58,68 +58,83 @@ const SUITS = [SUIT.club, SUIT.diamond, SUIT.spade, SUIT.heart];
 const RANK = {
     ace: {
         name: 'ace',
-        symbol: 'A'
+        symbol: 'A',
+        value: 1
     },
     two: {
         name: 'two',
-        symbol: '2'
+        symbol: '2',
+        value: 2
     },
     three: {
         name: 'three',
-        symbol: '3'
+        symbol: '3',
+        value: 3
     },
     four: {
         name: 'four',
-        symbol: '4'
+        symbol: '4',
+        value: 4
     },
     five: {
         name: 'five',
-        symbol: '5'
+        symbol: '5',
+        value: 5
     },
     six: {
         name: 'six',
-        symbol: '6'
+        symbol: '6',
+        value: 6
     },
     seven: {
         name: 'seven',
-        symbol: '7'
+        symbol: '7',
+        value: 7
     },
     eight: {
         name: 'eight',
-        symbol: '8'
+        symbol: '8',
+        value: 8
     },
     nine: {
         name: 'nine',
-        symbol: '9'
+        symbol: '9',
+        value: 9
     },
     ten: {
         name: 'ten',
-        symbol: '10'
+        symbol: '10',
+        value: 10
     },
     jack: {
         name: 'jack',
-        symbol: 'J'
+        symbol: 'J',
+        value: 11
     },
     queen: {
         name: 'queen',
-        symbol: 'Q'
+        symbol: 'Q',
+        value: 12
     },
     king: {
         name: 'king',
-        symbol: 'K'
+        symbol: 'K',
+        value: 13
     }
 };
 
 const RANKS = [RANK.ace, RANK.two, RANK.three, RANK.four, RANK.five, RANK.six, RANK.seven, RANK.eight, RANK.nine, RANK.ten, RANK.jack, RANK.queen, RANK.king];
 
 class Card {
-    constructor({ suit, rank }) {
+    constructor(el, { suit, rank }) {
+        this.$el = el
         this.suit = suit
         this.rank = rank
+        this.render()
     }
     
-    render({ flipped = false, empty = false } = {}) {
-        if (empty) {
+    html({ flipped = false } = {}) {
+        if (!this.suit || !this.rank) {
             return $('<div class="card empty">')
         }
 
@@ -136,65 +151,160 @@ class Card {
         
         return card
     }
-}
-  
-function makeHand(suit) {
-    let hand = []
-    RANKS.forEach((rank) => {
-        hand.push(new Card({ suit, rank }))
-    })
-    return hand
+
+    render(el, options) {
+        $(el || this.$el).html(this.html(options))
+
+        return this
+    }
 }
 
-function renderHand(hand, target) {
-    $(target).empty()
-    hand.forEach((card) => {
-        $('<div class="col-card">').html(card.render()).appendTo(target)
-    })
-}
-
-// https://stackoverflow.com/a/2450976
-function shuffle(array) {
-    var currentIndex = array.length, temporaryValue, randomIndex;
-
-    // While there remain elements to shuffle...
-    while (0 !== currentIndex) {
-
-        // Pick a remaining element...
-        randomIndex = Math.floor(Math.random() * currentIndex);
-        currentIndex -= 1;
-
-        // And swap it with the current element.
-        temporaryValue = array[currentIndex];
-        array[currentIndex] = array[randomIndex];
-        array[randomIndex] = temporaryValue;
+class Hand {
+    constructor(el, { suit }) {
+        this.$el = $(el)
+        this.cards = this.makeHand(suit)
+        this.render()
     }
 
-    return array;
+    makeHand(suit) {
+        let cards = []
+        RANKS.forEach((rank) => {
+            cards.push(new Card(null, { suit, rank }))
+        })
+        return cards
+    }
+
+    // based on https://stackoverflow.com/a/2450976
+    shuffle() {
+        var array = this.cards;
+        var currentIndex = array.length, temporaryValue, randomIndex;
+
+        // While there remain elements to shuffle...
+        while (0 !== currentIndex) {
+            // Pick a remaining element...
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex -= 1;
+
+            // And swap it with the current element.
+            temporaryValue = array[currentIndex];
+            array[currentIndex] = array[randomIndex];
+            array[randomIndex] = temporaryValue;
+        }
+
+        return this;
+    }
+
+    takeCard(rank) {
+        let card
+        
+        if (rank) {
+            const cardIndex = this.cards.findIndex(card => card.rank.name === rank)
+            card = playerHand.splice(cardIndex, 1)[0]
+        } else {
+            card = this.cards.pop()
+        }
+        
+        this.render()
+
+        return card
+    }
+
+    render(el, { flipped } = {}) {
+        const $el = $(el || this.$el)
+
+        if (flipped) {
+            if (this.cards.length > 0) {
+                this.cards[0].render($el, { flipped })
+            } else {
+                new Card($el, {})
+            }    
+        }
+
+        $el.empty()
+        this.cards.forEach((card) => {
+            $('<div class="col-card">').html(card.html()).appendTo($el)
+        })
+
+        return this
+    }
 }
 
-let playerHand = makeHand(SUIT.spade)
-let computerHand = makeHand(SUIT.heart)
-let deck = shuffle(makeHand(SUIT.club))
-let discard = makeHand(SUIT.diamond)
+let playerHand = new Hand('#player-hand', { suit: SUIT.spade })
+let computerHand = new Hand('#computer-hand', { suit: SUIT.heart }).shuffle()
+let deck = new Hand(null, { suit: SUIT.club }).shuffle()
+let discard = new Hand(null, { suit: SUIT.diamond })
+let emptyCard = new Card(null, {})
+let playerScore = 0, computerScore = 0
 
-renderHand(playerHand, '#player-hand')
+function makeComputerBid(prize) {
+    let computerBid = computerHand.takeCard()
+    computerBid.render('#computer-bid', { flipped: true }, )
+    emptyCard.render('#player-bid')
+    prize.render('#prize')
+    $('#player-hand').on('click', '.card', makePlayerBidHandler(prize, computerBid))
+}
 
-// deck.forEach((card) => {
-//     $("#deck").append(card.render({ flipped: true }))
-// })
-$('#deck').html(deck[0].render({ flipped: true }))
-$('#discard').html(discard[0].render({ flipped: true }))
-$('#prize').html(deck[1].render())
-
-$('#computer-bid').html(computerHand[0].render({ flipped: true }))
-$('#player-bid').html(new Card({}).render({ empty: true }))
-
-$('#player-hand').on('click', '.card', (e) => {
-    const $card = $(e.target).hasClass('card') ? $(e.target) : $(e.target).closest('.card')
+function getPlayerBid(target) {
+    const $card = $(target).hasClass('card') ? $(target) : $(target).closest('.card')
     const rank = $card.find('div')[0].classList[0].split('-')[1]
-    const cardIndex = playerHand.findIndex(card => card.rank.name === rank)
-    const [card] = playerHand.splice(cardIndex, 1)
-    renderHand(playerHand, '#player-hand')
-    $("#player-bid").html(card.render())
-})
+    return playerHand.takeCard(rank)
+}
+
+function scorePrize(prize, playerBid, computerBid) {
+    if (computerBid.rank.value > playerBid.rank.value) {
+        computerScore += prize.rank.value
+    } else {
+        playerScore += prize.rank.value
+    }
+    renderScores()
+}
+
+function renderScores() {
+    $('#computer-score').text(computerScore)
+    $('#player-score').text(playerScore)
+}
+
+function makePlayerBidHandler(prize, computerBid) {
+    return (e) => {
+        const playerBid = getPlayerBid(e.target)
+        console.log(playerBid)
+        playerBid.render('#player-bid')
+        computerBid.render('#computer-bid')
+        $("#player-hand").off('click', '.card')
+        $('#game-board').on('click', makeScoreHandler(prize, playerBid, computerBid))
+    }
+}
+
+function makeScoreHandler(prize, playerBid, computerBid) {
+    return () => {
+        $('#game-board').off('click')
+        scorePrize(prize, playerBid, computerBid)
+
+        if (deck.length > 0) {
+            makeComputerBid(deck.pop())
+        }
+    }
+}
+
+function startGame() {
+    playerHand = new Hand('#player-hand', { suit: SUIT.spade })
+    computerHand = new Hand('#computer-hand', { suit: SUIT.heart }).shuffle()
+    deck = new Hand('#deck', { suit: SUIT.club }).shuffle()
+    discard = new Hand('#discard', { suit: SUIT.diamond })
+    playerScore = 0
+    computerScore = 0
+    // render piles
+    deck.render(null, { flipped: true })
+    discard.render(null, { flipped: true })
+    // render bids
+    emptyCard.render('#prize')
+    emptyCard.render('#computer-bid')
+    emptyCard.render('#player-bid')
+
+    renderScores()
+    makeComputerBid(deck.pop())
+}
+
+$('#start-game').on('click', () => startGame())
+
+startGame()
