@@ -133,12 +133,12 @@ class Card {
         this.render()
     }
     
-    html({ flipped = false } = {}) {
+    html(options = {}) {
         if (!this.suit || !this.rank) {
             return $('<div class="card empty">')
         }
 
-        if (flipped) {
+        if (options.flipped) {
             const template = $("#card-back").html()
             return $('<div class="card">').html(template)
         }
@@ -160,9 +160,10 @@ class Card {
 }
 
 class Hand {
-    constructor(el, { suit }) {
+    constructor(el, { suit, flipped }) {
         this.$el = $(el)
         this.cards = this.makeHand(suit)
+        this.flipped = flipped
         this.render()
     }
 
@@ -172,6 +173,10 @@ class Hand {
             cards.push(new Card(null, { suit, rank }))
         })
         return cards
+    }
+
+    length() {
+        return this.cards.length
     }
 
     // based on https://stackoverflow.com/a/2450976
@@ -199,7 +204,7 @@ class Hand {
         
         if (rank) {
             const cardIndex = this.cards.findIndex(card => card.rank.name === rank)
-            card = playerHand.splice(cardIndex, 1)[0]
+            card = this.cards.splice(cardIndex, 1)[0]
         } else {
             card = this.cards.pop()
         }
@@ -209,7 +214,7 @@ class Hand {
         return card
     }
 
-    render(el, { flipped } = {}) {
+    render(el, { flipped = this.flipped } = {}) {
         const $el = $(el || this.$el)
 
         if (flipped) {
@@ -218,12 +223,12 @@ class Hand {
             } else {
                 new Card($el, {})
             }    
+        } else {
+            $el.empty()
+            this.cards.forEach((card) => {
+                $('<div class="col-card">').html(card.html()).appendTo($el)
+            })
         }
-
-        $el.empty()
-        this.cards.forEach((card) => {
-            $('<div class="col-card">').html(card.html()).appendTo($el)
-        })
 
         return this
     }
@@ -280,29 +285,43 @@ function makeScoreHandler(prize, playerBid, computerBid) {
         $('#game-board').off('click')
         scorePrize(prize, playerBid, computerBid)
 
-        if (deck.length > 0) {
-            makeComputerBid(deck.pop())
+        if (deck.length() > 0) {
+            makeComputerBid(deck.takeCard())
+        } else {
+            emptyCard.render('#prize')
+            emptyCard.render('#computer-bid')
+            emptyCard.render('#player-bid')
+            setTimeout(showWinner, 100)
         }
     }
+}
+
+function showWinner() {
+    if (computerScore > playerScore) {
+        alert("You lost")
+    } else if (playerScore > computerScore) {
+        alert("You won")
+    } else {
+        alert("It's a draw")
+    }
+    startGame()
 }
 
 function startGame() {
     playerHand = new Hand('#player-hand', { suit: SUIT.spade })
     computerHand = new Hand('#computer-hand', { suit: SUIT.heart }).shuffle()
-    deck = new Hand('#deck', { suit: SUIT.club }).shuffle()
-    discard = new Hand('#discard', { suit: SUIT.diamond })
+    deck = new Hand('#deck', { suit: SUIT.club, flipped: true }).shuffle()
+    discard = new Hand('#discard', { suit: SUIT.diamond, flipped: true })
     playerScore = 0
     computerScore = 0
-    // render piles
-    deck.render(null, { flipped: true })
-    discard.render(null, { flipped: true })
     // render bids
     emptyCard.render('#prize')
     emptyCard.render('#computer-bid')
     emptyCard.render('#player-bid')
 
     renderScores()
-    makeComputerBid(deck.pop())
+    // console.log(deck.cards)
+    makeComputerBid(deck.cards.pop())
 }
 
 $('#start-game').on('click', () => startGame())
