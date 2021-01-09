@@ -55,6 +55,14 @@ main {
 
   #score-container {
       margin: 100px auto;
+      border: 1px solid black;
+      font-size: 4em;
+      
+  }
+
+  .computer-score, .player-score {
+      font-size: 10em;
+
   }
 
   #player-hand, #computer-hand {

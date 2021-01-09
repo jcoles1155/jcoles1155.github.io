@@ -21,14 +21,31 @@
     2) Define requied variables used to track the state of the game
     3) Store elements on the page that will be accessed in code more than once in variables 
     4) On load:
-        4.1) Initialize the state variables
-        4.2) 
-        4.3)
-    5) 
+        4.1) Modal prompts player to choose from 4 categories of suits
+    5) Shuffle remaining suits
+    6) Pop suit into Computer hand
+    7) Pop suit into deck
+    8) Pop suit into discard
+    9) Generate hand for Player and computer
+    10) shuffle computer's hand
+    11) Generate game-board and scorecard
+    12) Have deck flipped over but prize card flipped open in the middle
+    13) Have Computer's bid face-down
+    14) allow player to make bid on prize card
+    15) Once bid is clicked all bids are flipped open 
+    16) player must click on game-board to render score 
+    17) new Deck card is flipped open and new turn is started
 
-
-
- */
+    To-Do:
+    * get html/css files of cards 
+    * instantiate SUITS and RANKS
+    * make Card class
+        * Needs to render HTML templates 
+    * make Hand class
+        * push card into hand
+    * pull modal template from bootstrap
+    * 
+*/
 
 const SUIT = {
     club: {
@@ -137,12 +154,13 @@ class Card {
         if (!this.suit || !this.rank) {
             return $('<div class="card empty">')
         }
-
+        // return card back if flipped is true
         if (options.flipped) {
             const template = $("#card-back").html()
             return $('<div class="card">').html(template)
         }
-    
+        // using RegExp as oppossed to a loop to replace suit symbol and name into html
+        // find div and add name into class
         const template = $(`#card-${this.rank.name}`).html()
             .replace(new RegExp('{suit.symbol}', 'g'), this.suit.symbol)
             .replace(new RegExp('{suit.name}', 'g'), this.suit.name)
@@ -162,12 +180,13 @@ class Card {
 class Hand {
     constructor(el, { suit, flipped, col }) {
         this.$el = $(el)
+
         this.cards = suit ? this.makeHand(suit) : []
         this.flipped = flipped
         this.col = col
         this.render()
     }
-
+    // Generate hand and create cards array
     makeHand(suit) {
         let cards = []
         RANKS.forEach((rank) => {
@@ -185,6 +204,7 @@ class Hand {
         return this
     }
 
+    // Take card from selected index and splice card out of cards array
     takeCard(rank) {
         let card
         
@@ -194,21 +214,21 @@ class Hand {
         } else {
             card = this.cards.pop()
         }
-        
+        // render card
         this.render()
 
         return card
     }
-
+    // add card 
     addCard(card) {
         this.cards.push(card)
         return this.render()
     }
-
+    // empty out cards array
     empty() {
         this.cards = []
     }
-
+    // using reduce function to find the value of cards added together
     value() {
         return this.cards.reduce((sum, card) => sum + card.rank.value, 0)
     }
@@ -216,13 +236,16 @@ class Hand {
     render(el, { flipped = this.flipped } = {}) {
         const $el = $(el || this.$el)
 
+        // check if flipped
         if (flipped) {
             if (this.cards.length > 0) {
                 this.cards[0].render($el, { flipped })
             } else {
+                // create new card
                 new Card($el, {})
             }    
         } else {
+            // append col class into the card
             $el.empty()
             this.cards.forEach((card) => {
                 $('<div>').attr('class', this.col ? 'col' : 'col-card').html(card.html()).appendTo($el)
@@ -232,6 +255,8 @@ class Hand {
         return this
     }
 }
+
+// Create modal class that has to Show modal screen 
 
 class Modal {
     constructor({ title, body }) {
@@ -248,33 +273,39 @@ class Modal {
         this.modal.show()
     }
 
+    // create close handler to close modal after selection of suit
+
     hide() {
         this.modal.hide()
         if (this.closeHandler) this.closeHandler()
     }
+
 
     onClose(callback) {
         this.closeHandler = callback
     }
 }
 
+// Create class for selecting Suit
+
 class ChooseSuitModal {
     constructor() {
         this.$el = $('#chooseSuit')
     }
-
+    // using bootstrap.Modal to create modal
     show() {     
         this.modal = new bootstrap.Modal(this.$el[0], {
             backdrop: 'static', keyboard: false
-        })
+        }) // find suit and hide modal
         this.$el.find('button').on('click', (e) => {
             const suit = $(e.target).attr('id')
             this.modal.hide()
             if (this.closeHandler) this.closeHandler(suit)
         })
+        // show modal
         this.modal.show()
     }
-
+    // function to hide modal
     hide() {
         this.modal.hide()
         if (this.closeHandler) this.closeHandler()
@@ -286,6 +317,7 @@ class ChooseSuitModal {
 }
 
 // based on https://stackoverflow.com/a/2450976
+
 function shuffle(array) {
     var currentIndex = array.length, temporaryValue, randomIndex;
 
@@ -304,6 +336,8 @@ function shuffle(array) {
     return array;
 }
 
+// instantiate variables and empty card slots
+// Make sure scores are set to 0
 let playerHand, computerHand, deck, discard, prize
 let emptyCard = new Card(null, {})
 let playerScore = 0, computerScore = 0
@@ -337,6 +371,10 @@ function makePlayerBidHandler(computerBid) {
     }
 }
 
+// Score has to turn off click on game board
+// make if statement to determine winner
+// determine if game is over
+
 function makeScoreHandler(playerBid, computerBid) {
     return () => {
         $('#game-board').off('click')
@@ -361,7 +399,7 @@ function makeScoreHandler(playerBid, computerBid) {
         }
     }
 }
-
+// Create modal of showing winner or loser
 function showWinner() {
     let modal
     if (computerScore > playerScore) {
@@ -375,26 +413,30 @@ function showWinner() {
 }
 
 function chooseSuit() {
-    // render bids
+    // empty out the prize and bids
     emptyCard.render('#prize')
     emptyCard.render('#computer-bid')
     emptyCard.render('#player-bid')
 
     let modal = new ChooseSuitModal()
+    // call close function after pressing suit
     modal.onClose((suit) => startGame(SUIT[suit]))
     modal.show()
 }
 
 function startGame(playerSuit) {
+    // Create Player and Computer hands
     playerHand = new Hand('#player-hand', { suit: playerSuit })
+    // Suits has to shuffle and select from remaining suits
     let suits = shuffle(SUITS.filter(suit => suit != playerSuit))
     computerHand = new Hand('#computer-hand', { suit: suits.pop() }).shuffle()
+    // generate deck and discard from remaing suits after shuffling again
     deck = new Hand('#deck', { suit: suits.pop(), flipped: true }).shuffle()
     discard = new Hand('#discard', { suit: suits.pop(), flipped: true })
     prize = new Hand('#prize', { col: true })
     playerScore = 0
     computerScore = 0
-
+    // Turn off click event handler to game-board and player-hand
     $('#game-board').off('click')
     $('#player-hand').off('click')
 
