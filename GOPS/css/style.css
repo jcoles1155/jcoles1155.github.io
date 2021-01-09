@@ -18,12 +18,12 @@ main {
 
   #title {
     max-width: 500px;
-    height: 50px;
+    height: 160px;
     border: 1px solid black;
     padding: 2px;
     margin: 5px auto;
     text-align: center;
-    font-size: 25px;
+    font-size: 50px;
 
   }
 
@@ -58,6 +58,9 @@ main {
       border: 1px solid black;
       font-size: 4em;
       
+  }
+  #start-game {
+    font-size: 2em;
   }
 
   /* .computer-score, .player-score {
