@@ -42,7 +42,7 @@ main {
       border: 1px solid black;
       padding: 10px;
       /* margin: 30px auto; */
-      font-size: 12px;
+      font-size: 18px;
   }
 
   #scoreboard {
@@ -60,17 +60,17 @@ main {
       
   }
 
-  .computer-score, .player-score {
+  /* .computer-score, .player-score {
       font-size: 10em;
 
-  }
+  } */
 
   #player-hand, #computer-hand {
       /* width: 100%; */
       border: 1px solid black;
       /* padding: 5px; */
       /* margin: 40px auto; */
-      font-size: 12px;
+      font-size: 18px;
   }
 
   #main-div {
