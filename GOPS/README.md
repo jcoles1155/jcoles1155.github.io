@@ -1,3 +1,6 @@
+## Project Link
+
+https://jcoles1155.github.io/
 
 # Project Title
 
@@ -28,6 +31,8 @@ In GOPS, Aces are worth 1 point and, going incrementally, Kings are worth 13 poi
 - Player must then choose a card to bid and card will then show in the display 
 - All cards then are flipped and player must click game board to add score and flip new deck card
 - Game proceeds until the deck and players have no cards left
+- When there is either a win or loss a modal pops up alerting the player that they have won or lost 
+- New game begins once player press start new game button
 
 - In the event of a tie another card is flipped from the deck and player must bid again
     - the winner will score the sum of all deck cards flipped once the tie is broke
@@ -36,5 +41,4 @@ In GOPS, Aces are worth 1 point and, going incrementally, Kings are worth 13 poi
 ## Acknowledgments
 
 * playing cards generated using code from: https://donpark.github.io/scalable-css-playing-cards/
-* Inspiration
-* etc
+* shuffle function pulled from: https://stackoverflow.com/a/2450976
